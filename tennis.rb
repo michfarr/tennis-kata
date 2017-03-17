@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 class TennisGame1
   POINT_VALUES = %w(Love Fifteen Thirty Forty).freeze
 
@@ -39,7 +38,7 @@ class TennisGame1
   end
 
   def give_score(points)
-    POINT_VALUES.at points
+    POINT_VALUES[points]
   end
 
   def scores_are_equal(points)
