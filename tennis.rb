@@ -1,5 +1,11 @@
+# frozen_string_literal: true
 class TennisGame1
   POINT_VALUES = %w(Love Fifteen Thirty Forty).freeze
+
+  ADVANTAGE = 'Advantage '.freeze
+  WINNER    = 'Win for '.freeze
+  DEUCE     = 'Deuce'.freeze
+  ALL       = '-All'.freeze
 
   def initialize(player1_name, player2_name)
     @player1 = {
@@ -33,28 +39,29 @@ class TennisGame1
   end
 
   def give_score(points)
-    POINT_VALUES.at(points)
+    POINT_VALUES.at points
   end
 
   def scores_are_equal(points)
     score_name = give_score points
 
     if points < 3
-      "#{score_name}-All"
+      score_name + ALL
     else
-      'Deuce'
+      DEUCE
     end
   end
 
   def compare_advantage(point_difference)
     if point_difference == 1
-      "Advantage #{@player1[:name]}"
+      ADVANTAGE + @player1[:name]
     elsif point_difference == -1
-      "Advantage #{@player2[:name]}"
+      ADVANTAGE + @player2[:name]
+
     elsif point_difference >= 2
-      "Win for #{@player1[:name]}"
+      WINNER + @player1[:name]
     else
-      "Win for #{@player2[:name]}"
+      WINNER + @player2[:name]
     end
   end
 
