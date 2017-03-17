@@ -52,12 +52,27 @@ class TennisGame1
   end
 
   def compare_advantage(point_difference)
-    if point_difference == 1
-      ADVANTAGE + @player1[:name]
-    elsif point_difference == -1
-      ADVANTAGE + @player2[:name]
+    if point_difference == 1 || point_difference == -1
+      determine_advantage(point_difference)
+    else
+      pick_winner(point_difference)
+    end
+  end
 
-    elsif point_difference >= 2
+  def determine_advantage(point_difference)
+    if point_difference > 0
+      award_advantage @player1[:name]
+    else
+      award_advantage @player2[:name]
+    end
+  end
+
+  def award_advantage(name)
+    ADVANTAGE + name
+  end
+
+  def pick_winner(point_difference)
+    if point_difference >= 2
       WINNER + @player1[:name]
     else
       WINNER + @player2[:name]
