@@ -1,3 +1,4 @@
+# This will stop the Rubocop
 class TennisGame1
   POINT_VALUES = %w(Love Fifteen Thirty Forty).freeze
 
@@ -7,23 +8,17 @@ class TennisGame1
   ALL       = '-All'.freeze
 
   def initialize(player1_name, player2_name)
-    @player1 = {
-      name: player1_name,
-      points: 0
-    }
-
-    @player2 = {
-      name: player2_name,
-      points: 0
-    }
+    @players = [
+      { name: player1_name, points: 0 },
+      { name: player2_name, points: 0 }
+    ]
+    @player1 = @players[0]
+    @player2 = @players[1]
   end
 
   def award_point(name)
-    if name == @player1[:name]
-      @player1[:points] += 1
-    else
-      @player2[:points] += 1
-    end
+    point_winner = @players.detect { |player| player[:name] == name }
+    point_winner[:points] += 1
   end
 
   def determine_score
@@ -37,16 +32,16 @@ class TennisGame1
     end
   end
 
-  def give_score(points)
-    POINT_VALUES[points]
-  end
-
   def equal_points?
     @player1[:points] == @player2[:points]
   end
 
   def in_advantage?
     @player1[:points] >= 4 || @player2[:points] >= 4
+  end
+
+  def give_score(points)
+    POINT_VALUES[points]
   end
 
   def scores_are_equal(points)
