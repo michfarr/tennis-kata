@@ -27,9 +27,9 @@ class TennisGame1
   end
 
   def determine_score
-    if @player1[:points] == @player2[:points]
+    if equal_points?
       scores_are_equal(@player1[:points])
-    elsif @player1[:points] >= 4 || @player2[:points] >= 4
+    elsif in_advantage?
       point_difference = @player1[:points] - @player2[:points]
       compare_advantage(point_difference)
     else
@@ -39,6 +39,14 @@ class TennisGame1
 
   def give_score(points)
     POINT_VALUES[points]
+  end
+
+  def equal_points?
+    @player1[:points] == @player2[:points]
+  end
+
+  def in_advantage?
+    @player1[:points] >= 4 || @player2[:points] >= 4
   end
 
   def scores_are_equal(points)
