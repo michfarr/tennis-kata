@@ -1,5 +1,5 @@
-require File.join(File.dirname(__FILE__), 'tennis')
-#require_relative("tennis")
+#require File.join(File.dirname(__FILE__), '../tennis')
+require_relative("../tennis")
 require 'test/unit'
 
 TEST_CASES = [
@@ -53,10 +53,10 @@ class TestTennis < Test::Unit::TestCase
     game = tennisGameClass.new(p1Name, p2Name)
     (0..[p1Points, p2Points].max).each do |i|
       if i < p1Points
-        game.won_point(p1Name)
+        game.award_point(p1Name)
       end
       if i < p2Points
-        game.won_point(p2Name)
+        game.award_point(p2Name)
       end
     end
     game
@@ -66,20 +66,6 @@ class TestTennis < Test::Unit::TestCase
     TEST_CASES.each do |testcase|
       (p1Points, p2Points, score, p1Name, p2Name) = testcase
       game = play_game(TennisGame1, p1Points, p2Points, p1Name, p2Name)
-      assert_equal(score, game.score())
-    end
-  end
-  def test_Score_Game2
-    TEST_CASES.each do |testcase|
-      (p1Points, p2Points, score, p1Name, p2Name) = testcase
-      game = play_game(TennisGame2, p1Points, p2Points, p1Name, p2Name)
-      assert_equal(score, game.score())
-    end
-  end
-  def test_Score_Game3
-    TEST_CASES.each do |testcase|
-      (p1Points, p2Points, score, p1Name, p2Name) = testcase
-      game = play_game(TennisGame3, p1Points, p2Points, p1Name, p2Name)
       assert_equal(score, game.score())
     end
   end
