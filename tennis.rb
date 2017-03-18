@@ -16,20 +16,15 @@ class TennisGame1
     @player2 = @players[1]
   end
 
-  def award_point(name)
-    point_winner = @players.detect { |player| player[:name] == name }
-    point_winner[:points] += 1
+  def find_player_by_name(name)
+    @players.detect do |player|
+      player[:name] == name
+    end
   end
 
-  def determine_score
-    if equal_points?
-      scores_are_equal(@player1[:points])
-    elsif in_advantage?
-      point_difference = @player1[:points] - @player2[:points]
-      compare_advantage(point_difference)
-    else
-      award_score
-    end
+  def award_point(name)
+    player = find_player_by_name(name)
+    player[:points] += 1
   end
 
   def equal_points?
@@ -40,26 +35,42 @@ class TennisGame1
     @player1[:points] >= 4 || @player2[:points] >= 4
   end
 
-  def give_score(points)
+  def determine_score
+    if equal_points?
+      all_or_deuce
+    elsif in_advantage?
+      compare_advantage
+    else
+      award_score
+    end
+  end
+
+  def score(points)
     POINT_VALUES[points]
   end
 
-  def scores_are_equal(points)
-    score_name = give_score points
+  def all_or_deuce
+    current_score = score @player1[:points]
 
-    if points < 3
-      score_name + ALL
+    if @player1[:points] < 3
+      current_score + ALL
     else
       DEUCE
     end
   end
 
-  def compare_advantage(point_difference)
-    if point_difference == 1 || point_difference == -1
+  def compare_advantage
+    point_difference = @player1[:points] - @player2[:points]
+
+    if point_difference.abs == 1
       determine_advantage(point_difference)
     else
       pick_winner(point_difference)
     end
+  end
+
+  def award_advantage(name)
+    ADVANTAGE + name
   end
 
   def determine_advantage(point_difference)
@@ -68,10 +79,6 @@ class TennisGame1
     else
       award_advantage @player2[:name]
     end
-  end
-
-  def award_advantage(name)
-    ADVANTAGE + name
   end
 
   def pick_winner(point_difference)
@@ -83,8 +90,8 @@ class TennisGame1
   end
 
   def award_score
-    score_one = give_score(@player1[:points])
-    score_two = give_score(@player2[:points])
+    score_one = score(@player1[:points])
+    score_two = score(@player2[:points])
 
     "#{score_one}-#{score_two}"
   end
