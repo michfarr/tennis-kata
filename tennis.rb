@@ -1,71 +1,85 @@
-# This will stop the Rubocop
+# tennis.rb
 class TennisGame1
-  POINT_VALUES = %w(Love Fifteen Thirty Forty).freeze
+  Player = Struct.new(:name, :points)
 
-  ADVANTAGE = 'Advantage '.freeze
   WINNER    = 'Win for '.freeze
+  ADVANTAGE = 'Advantage '.freeze
   DEUCE     = 'Deuce'.freeze
   ALL       = '-All'.freeze
 
+  POINT_VALUES = %w(Love Fifteen Thirty Forty).freeze
+
   def initialize(player1_name, player2_name)
     @players = [
-      { name: player1_name, points: 0 },
-      { name: player2_name, points: 0 }
+      Player.new(player1_name, 0),
+      Player.new(player2_name, 0)
     ]
-    @player1 = @players[0]
-    @player2 = @players[1]
   end
 
-  def find_player_by_name(name)
-    @players.detect do |player|
-      player[:name] == name
-    end
+  def player1
+    @players[0]
+  end
+
+  def player2
+    @players[1]
+  end
+
+  def find_by_name(name)
+    @players.find { |player| player.name == name }
   end
 
   def award_point(name)
-    player = find_player_by_name(name)
-    player[:points] += 1
-  end
-
-  def equal_points?
-    @player1[:points] == @player2[:points]
-  end
-
-  def in_advantage?
-    @player1[:points] >= 4 || @player2[:points] >= 4
+    player = find_by_name(name)
+    player.points += 1
   end
 
   def determine_score
-    if equal_points?
-      all_or_deuce
-    elsif in_advantage?
-      compare_advantage
-    else
-      award_score
-    end
+    return all_or_deuce      if equal_points?
+    return compare_advantage if in_advantage?
+    award_score
   end
 
   def score(points)
     POINT_VALUES[points]
   end
 
-  def all_or_deuce
-    current_score = score @player1[:points]
+  def equal_points?
+    player1.points == player2.points
+  end
 
-    if @player1[:points] < 3
-      current_score + ALL
-    else
-      DEUCE
-    end
+  def all_or_deuce
+    current_score = score player1.points
+
+    return DEUCE if deuce?
+    current_score + ALL
+  end
+
+  def deuce?
+    player1.points > 2
+  end
+
+  def in_advantage?
+    player1.points > 3 || player2.points > 3
   end
 
   def compare_advantage
-    point_difference = @player1[:points] - @player2[:points]
+    return determine_winner if game_over?
+    determine_advantage
+  end
 
-    if point_difference.abs == 1
-      determine_advantage(point_difference)
+  def game_over?
+    point_difference.abs > 1
+  end
+
+  def point_difference
+    player1.points - player2.points
+  end
+
+  def determine_advantage
+    if point_difference.positive?
+      award_advantage(player1.name)
     else
-      pick_winner(point_difference)
+      award_advantage(player2.name)
     end
   end
 
@@ -73,26 +87,18 @@ class TennisGame1
     ADVANTAGE + name
   end
 
-  def determine_advantage(point_difference)
-    if point_difference > 0
-      award_advantage @player1[:name]
-    else
-      award_advantage @player2[:name]
-    end
-  end
-
-  def pick_winner(point_difference)
-    if point_difference >= 2
-      WINNER + @player1[:name]
-    else
-      WINNER + @player2[:name]
-    end
-  end
-
   def award_score
-    score_one = score(@player1[:points])
-    score_two = score(@player2[:points])
+    score_one = score(player1.points)
+    score_two = score(player2.points)
 
     "#{score_one}-#{score_two}"
+  end
+
+  def determine_winner
+    if point_difference >= 2
+      WINNER + player1.name
+    else
+      WINNER + player2.name
+    end
   end
 end
