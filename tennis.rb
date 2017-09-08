@@ -76,11 +76,8 @@ class TennisGame1
   end
 
   def determine_advantage
-    if point_difference.positive?
-      award_advantage(player1.name)
-    else
-      award_advantage(player2.name)
-    end
+    return award_advantage(player1.name) if point_difference.positive?
+    award_advantage(player2.name)
   end
 
   def award_advantage(name)
@@ -95,10 +92,7 @@ class TennisGame1
   end
 
   def determine_winner
-    if point_difference >= 2
-      WINNER + player1.name
-    else
-      WINNER + player2.name
-    end
+    return WINNER + player1.name if point_difference >= 2
+    WINNER + player2.name
   end
 end
